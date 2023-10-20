@@ -4,12 +4,18 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.CTRSwerve.CTRSwerveDrivetrain;
+import frc.robot.subsystems.CTRSwerve.SwerveDriveConstantsCreator;
+import frc.robot.subsystems.CTRSwerve.SwerveDriveTrainConstants;
+import frc.robot.subsystems.CTRSwerve.SwerveModuleConstants;
+
+import com.ctre.phoenixpro.configs.Slot0Configs;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,15 +24,24 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
+  private SwerveDriveConstantsCreator m_constantsCreator;
+  private SwerveDriveTrainConstants drivetrain;
+  private SwerveModuleConstants frontRight;
+  private SwerveModuleConstants frontLeft;
+  private SwerveModuleConstants backRight;
+  private SwerveModuleConstants backLeft;
+  private Slot0Configs steerGains;
+  private Slot0Configs driveGains;
+  private CTRSwerveDrivetrain m_drivetrain;
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
+  // The robot's subsystems and commands are defined here...
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the trigger bindings
+      public static final CTRSwerveDrivetrain m_swerveSubsystem = new CTRSwerveDrivetrain(drivetrain, null)
+
+      
   }
 
   /**

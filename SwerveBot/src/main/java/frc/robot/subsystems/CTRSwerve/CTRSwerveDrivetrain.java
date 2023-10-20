@@ -1,6 +1,7 @@
 package frc.robot.subsystems.CTRSwerve;
 
 import com.ctre.phoenixpro.BaseStatusSignalValue;
+import com.ctre.phoenixpro.configs.Slot0Configs;
 import com.ctre.phoenixpro.hardware.Pigeon2;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,8 +15,72 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class CTRSwerveDrivetrain {
+public class CTRSwerveDrivetrain extends SubsystemBase{
+    private SwerveDriveConstantsCreator m_constantsCreator;
+    private SwerveDriveTrainConstants drivetrain;
+    private SwerveModuleConstants frontRight;
+    private SwerveModuleConstants frontLeft;
+    private SwerveModuleConstants backRight;
+    private SwerveModuleConstants backLeft;
+    private Slot0Configs steerGains;
+    private Slot0Configs driveGains;
+    
+    steerGains = new Slot0Configs();
+      steerGains.kP = Constants.STEER_GAINS_KP;
+      steerGains.kD = Constants.STEER_GAINS_KD;
+
+    driveGains = new Slot0Configs();
+      driveGains.kP = Constants.DRIVE_GAINS_KP;
+
+    /*DRIVE TRAIN INITIALIZATION*/
+    drivetrain = new SwerveDriveTrainConstants().withPigeon2Id(Constants.PIGEON_ID).withCANbusName(Constants.CAN_BUS_DRIVE).withTurnKp(Constants.DRIVE_TURN_KP).withTurnKd(Constants.DRIVE_TURN_KD);
+    m_constantsCreator = new SwerveDriveConstantsCreator(
+      Constants.DRIVE_GEAR_RATIO, 
+      Constants.AZIMUTH_GEAR_RATIO, 
+      Constants.WHEEL_RADIUS_INCHES, 
+      Constants.SLIP_CURRENT, 
+      steerGains, 
+      driveGains, 
+      true
+      );
+
+    frontRight = m_constantsCreator.createModuleConstants(
+      Constants.FRONT_RIGHT_AZIMUTH, 
+      Constants.FRONT_RIGHT_DRIVE, 
+      Constants.FRONT_RIGHT_CANCODER, 
+      Constants.FRONT_RIGHT_OFFSET, 
+      Constants.DRIVETRAIN_LENGTH/2.0, 
+      -Constants.DRIVETRAIN_LENGTH/2.0
+      );
+    
+    frontLeft = m_constantsCreator.createModuleConstants(
+      Constants.FRONT_LEFT_AZIMUTH, 
+      Constants.FRONT_LEFT_DRIVE, 
+      Constants.FRONT_LEFT_CANCODER, 
+      Constants.FRONT_LEFT_OFFSET, 
+      Constants.DRIVETRAIN_LENGTH/2.0, 
+      Constants.DRIVETRAIN_LENGTH/2.0);
+
+    backRight = m_constantsCreator.createModuleConstants(
+      Constants.BACK_RIGHT_AZIMUTH, 
+      Constants.BACK_RIGHT_DRIVE, 
+      Constants.BACK_RIGHT_CANCODER, 
+      Constants.BACK_RIGHT_OFFSET, 
+      -Constants.DRIVETRAIN_LENGTH/2.0, 
+      -Constants.DRIVETRAIN_LENGTH/2.0);
+
+    backLeft = m_constantsCreator.createModuleConstants(
+      Constants.BACK_LEFT_AZIMUTH, 
+      Constants.BACK_LEFT_DRIVE, 
+      Constants.BACK_LEFT_CANCODER, 
+      Constants.BACK_LEFT_OFFSET, 
+      -Constants.DRIVETRAIN_LENGTH/2.0, 
+      Constants.DRIVETRAIN_LENGTH/2.0);
+
+      m_drivetrain = new CTRSwerveDrivetrain(drivetrain, frontRight, frontLeft, backRight, backLeft);
+}
     private final int ModuleCount;
 
     private CTRSwerveModule[] m_modules;
@@ -27,6 +92,8 @@ public class CTRSwerveDrivetrain {
     private OdometryThread m_odometryThread;
     private Field2d m_field;
     private PIDController m_turnPid;
+
+
 
     /* Perform swerve module updates in a separate thread to minimize latency */
     private class OdometryThread extends Thread {

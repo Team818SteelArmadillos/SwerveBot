@@ -9,8 +9,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.OI;
-import frc.robot.CTRSwerve.CTRSwerveDrivetrain;
-import frc.robot.subsystems.CTRSwerveSubsystem;
+import frc.robot.subsystems.CTRSwerve.CTRSwerveDrivetrain;
 
 public class SwerveDriveCommand extends CommandBase {
 
@@ -19,10 +18,10 @@ public class SwerveDriveCommand extends CommandBase {
   private int drive_lock_counter;
 
   /** Creates a new SwerveDriveCommand. */
-  public SwerveDriveCommand(CTRSwerveSubsystem ctrSwerveSubsytem) {
+  public SwerveDriveCommand(CTRSwerveDrivetrain ctrSwerveDrivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(ctrSwerveSubsytem);
-    m_drivetrain = ctrSwerveSubsytem.getCTRSwerveDrivetrain();
+    addRequirements(ctrSwerveDrivetrain);
+    m_drivetrain = ctrSwerveDrivetrain;
     m_lastTargetAngle = new Rotation2d();
     drive_lock_counter = 0;
   }

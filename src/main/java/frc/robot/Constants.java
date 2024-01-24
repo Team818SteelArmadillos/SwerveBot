@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.commands.SwerveDrive;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -18,11 +20,12 @@ import frc.robot.commands.SwerveDrive;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
   
   public static final int kDriverControllerPort = 0;
 
   public static final int FalconPortFunTime = 0;
-  public static final int WheelRadius = 2;
+  public static final double WheelDiameter = Units.inchesToMeters(2);
   public static final double DriveMotorGearRatio = 3;
   public static final int pigeonID = 11;
   public static final double maxSpeed = 13; //meters per second
@@ -38,11 +41,18 @@ public final class Constants {
   public static final int backLeftRotatePort = 1;
   public static final int backRightRotatePort = 3;
 
+  public static final int AZIMUTH_GEAR_RATIO = 3;
   public static final int MagEncoderCPR = 4096; //NOT SURE ABT THIS
 
-  public static final double driveDistancePerPulse = (WheelRadius * Math.PI) / MagEncoderCPR; //Assumes encoder is direct mounted, probably isn't so fix with gear ration
-  public static final double turnDistancePerPulse = (2 * Math.PI) / MagEncoderCPR;
+  public static final double DriverDeadzone = 0.05;
 
+  public static final double driveDistancePerPulse = (WheelDiameter * Math.PI) / MagEncoderCPR; //Assumes encoder is direct mounted, probably isn't so fix with gear ration
+  public static final double turnDistancePerPulse = (2 * Math.PI) / MagEncoderCPR;
+  
+  public static double degreesToFalcon(double degrees){
+    double ticks = degrees / (360 * (3 * 4096));
+    return ticks;
+  }
     // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
     // These characterization values MUST be determined either experimentally or theoretically
     // for *your* robot's drive.
@@ -64,4 +74,4 @@ public final class Constants {
       new Translation2d(-frameSize / 2, frameSize / 2),
       new Translation2d(-frameSize / 2, -frameSize / 2)
     );
-}
+  }

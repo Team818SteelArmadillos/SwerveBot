@@ -6,8 +6,8 @@ package frc.robot;
 
 import frc.robot.commands.FalconSpinny;
 import frc.robot.commands.SwerveDrive;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.FalconSpinnySubsystem;
+import frc.robot.subsystems.SwerveDrivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public static OI m_OI = new OI();
-  private final Drivetrain m_SwerveSubsystem = new Drivetrain();
+  private final SwerveDrivetrain m_SwerveSubsystem = new SwerveDrivetrain();
   //private final FalconSpinnySubsystem m_FalconSpinnySubsystem = new FalconSpinnySubsystem();
   //private final FalconSpinny m_FalconSpinny = new FalconSpinny(m_FalconSpinnySubsystem);
   private final SwerveDrive m_SwerveDrive = new SwerveDrive(m_SwerveSubsystem);

@@ -30,12 +30,12 @@ public final class Constants {
   
   public static final int frontLeftDrivePort = 5;
   public static final int frontRightDrivePort = 4;
-  public static final int backLeftDrivePort = 1;
+  public static final int backLeftDrivePort = 10;
   public static final int backRightDrivePort = 2;
   
   public static final int frontLeftRotatePort = 6;
   public static final int frontRightRotatePort = 7;
-  public static final int backLeftRotatePort = 10;
+  public static final int backLeftRotatePort = 1;
   public static final int backRightRotatePort = 3;
 
   public static final int MagEncoderCPR = 4096; //NOT SURE ABT THIS

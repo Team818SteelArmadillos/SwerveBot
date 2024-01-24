@@ -50,20 +50,20 @@ public class Drivetrain extends SubsystemBase {
 
   private final SwerveModule m_frontRight =
       new SwerveModule(
-          Constants.frontLeftDrivePort,
-          Constants.frontLeftRotatePort,
+          Constants.frontRightDrivePort,
+          Constants.frontRightRotatePort,
           false);
 
   private final SwerveModule m_backLeft = 
       new SwerveModule(
-          Constants.frontLeftDrivePort,
-          Constants.frontLeftRotatePort,
+          Constants.backLeftDrivePort,
+          Constants.backLeftRotatePort,
           false);
 
   private final SwerveModule m_backRight = 
       new SwerveModule(
-          Constants.frontLeftDrivePort,
-          Constants.frontLeftRotatePort,
+          Constants.backRightDrivePort,
+          Constants.backRightRotatePort,
           false);
 
   
@@ -109,6 +109,7 @@ public class Drivetrain extends SubsystemBase {
     var swerveModuleStates = Constants.kinematics.toSwerveModuleStates(fieldRelative
                                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_pigeon.getRotation2d())
                                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
+    /*
     SmartDashboard.putNumber("Front Left Drive Desired State", swerveModuleStates[0].speedMetersPerSecond);
     SmartDashboard.putNumber("Front Left Turn Desired State", swerveModuleStates[0].angle.getDegrees());
 
@@ -120,6 +121,19 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putNumber("Back Right Drive Desired State", swerveModuleStates[3].speedMetersPerSecond);
     SmartDashboard.putNumber("Back Right Turn Desired State", swerveModuleStates[3].angle.getDegrees());
+    */
+
+    SmartDashboard.putNumber("Front Left Drive Encoder Values", m_frontLeft.getEncoderDrive());
+    SmartDashboard.putNumber("Front Left Turn Encoder Values", m_frontLeft.getTurnAngle());
+
+    SmartDashboard.putNumber("Front Right Drive Encoder Values", m_frontRight.getEncoderDrive());
+    SmartDashboard.putNumber("Front Right Turn Encoder Values", m_frontRight.getTurnAngle());
+    
+    SmartDashboard.putNumber("Back Left Drive Encoder Values", m_backLeft.getEncoderDrive());
+    SmartDashboard.putNumber("Back Left Turn Encoder Values", m_backLeft.getTurnAngle());
+
+    SmartDashboard.putNumber("Back Right Drive Encoder Values", m_backRight.getEncoderDrive());
+    SmartDashboard.putNumber("Back Right Turn Encoder Values", m_backRight.getTurnAngle());
 
     SmartDashboard.putNumber("Pigeon Reading", m_pigeon.getRotation2d().getDegrees());
 

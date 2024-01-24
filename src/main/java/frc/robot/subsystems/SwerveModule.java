@@ -18,7 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Encoder;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -72,12 +72,19 @@ public class SwerveModule extends SubsystemBase {
     m_driveMotor = new WPI_TalonSRX(driveMotorChannel);
     m_turningMotor = new WPI_TalonSRX(turningMotorChannel);
 
-    m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     m_driveMotor.setInverted(drivemotorinvert);
     m_driveMotor.setSelectedSensorPosition(0);
     m_driveMotor.setNeutralMode(NeutralMode.Brake);
 
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+    m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+    m_turningMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+
+    m_turningMotor.config_kP(turningMotorChannel, 1);
+    m_driveMotor.config_kP(driveMotorChannel, 1);
+
+    m_turningMotor.setSelectedSensorPosition(0);
+
   }
 
   /**
@@ -97,7 +104,7 @@ public class SwerveModule extends SubsystemBase {
     final double driveOutput =
         //m_drivePIDController.calculate(m_driveEncoder.getRate(), state.speedMetersPerSecond);
         m_drivePIDController.calculate(getVelocity(), state.speedMetersPerSecond);
-
+ 
     final double driveFeedforward = m_driveFeedforward.calculate(state.speedMetersPerSecond);
 
     // Calculate the turning motor output from the turning PID controller.
@@ -108,8 +115,16 @@ public class SwerveModule extends SubsystemBase {
     final double turnFeedforward =
         m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
 
-    m_driveMotor.setVoltage(driveOutput + driveFeedforward);
-    m_turningMotor.setVoltage(turnOutput + turnFeedforward);
+    // m_driveMotor.setVoltage((driveOutput + driveFeedforward) );
+     m_turningMotor.setVoltage((turnOutput + turnFeedforward) );
+    //m_driveMotor.setVoltage(5);
+    //m_turningMotor.setVoltage(5);
+
+    m_driveMotor.set(driveOutput/Constants.maxSpeed);
+    // m_turningMotor.set(turnOutput/Constants.maxRotation);
+    SmartDashboard.putNumber("Voltage apparently drive", driveOutput + driveFeedforward);
+    SmartDashboard.putNumber("Voltage apparently drive", turnOutput + turnFeedforward);
+
   }
 
   public void setPose(Pose2d pose) {
@@ -152,6 +167,10 @@ public class SwerveModule extends SubsystemBase {
   public SwerveModuleState getState() {                           // to see whther there is a difference between them
    //return new SwerveModuleState(getVelocity(), new Rotation2d(getTurningRadians()));
    return new SwerveModuleState(getVelocity(), new Rotation2d(m_turningMotor.get()));
+  }
+
+  public double getEncoderDrive(){
+    return m_driveMotor.getSelectedSensorPosition();
   }
 
 

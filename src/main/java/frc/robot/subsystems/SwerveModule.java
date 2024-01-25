@@ -55,6 +55,7 @@ public class SwerveModule {
 
         m_azimuthMotor.set(ControlMode.Position, m_azimuthMotor.getSelectedSensorPosition());
         m_lastAngle = getState().angle.getDegrees();
+
     }
 
     public double getRotateTicks(){
@@ -86,7 +87,7 @@ public class SwerveModule {
         double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.maxSpeed * 0.01)) ? m_lastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less then 1%. Prevents Jittering.
        
         SmartDashboard.putNumber("Angle", Conversions.degreesToFalcon(angle, Constants.AZIMUTH_GEAR_RATIO));
-        m_azimuthMotor.set(ControlMode.Position, Conversions.degreesToFalcon(angle, Constants.AZIMUTH_GEAR_RATIO));
+        m_azimuthMotor.set(ControlMode.Position, Conversions.degreesToFalcon(angle - m_offset, Constants.AZIMUTH_GEAR_RATIO));
 
         m_lastAngle = angle;
     }
@@ -160,7 +161,7 @@ public class SwerveModule {
      */
 
     public void zeroModule() {
-        m_azimuthMotor.setSelectedSensorPosition(Conversions.degreesToFalcon(m_offset, Constants.AZIMUTH_GEAR_RATIO));
+        m_azimuthMotor.setSelectedSensorPosition(Conversions.degreesToFalcon(-m_offset, Constants.AZIMUTH_GEAR_RATIO));
     }
 
 

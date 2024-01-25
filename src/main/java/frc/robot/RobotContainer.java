@@ -5,7 +5,9 @@
 package frc.robot;
 
 import frc.robot.commands.SwerveDrive;
+import frc.robot.commands.VisionController;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -17,15 +19,18 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public static OI m_OI = new OI();
-  public final SwerveDrivetrain m_SwerveSubsystem = new SwerveDrivetrain();
+  public static final OI m_OI = new OI();
+  public static final SwerveDrivetrain m_SwerveSubsystem = new SwerveDrivetrain();
+  public static final Vision m_Vision = new Vision();
   //private final FalconSpinnySubsystem m_FalconSpinnySubsystem = new FalconSpinnySubsystem();
   //private final FalconSpinny m_FalconSpinny = new FalconSpinny(m_FalconSpinnySubsystem);
   private final SwerveDrive m_SwerveDrive = new SwerveDrive(m_SwerveSubsystem);
+  private final VisionController m_VisionController = new VisionController(m_Vision);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_SwerveSubsystem.setDefaultCommand(m_SwerveDrive); 
+    m_Vision.setDefaultCommand(m_VisionController);
     //m_FalconSpinnySubsystem.setDefaultCommand(m_FalconSpinny);
     // Configure the trigger bindings
     configureBindings();

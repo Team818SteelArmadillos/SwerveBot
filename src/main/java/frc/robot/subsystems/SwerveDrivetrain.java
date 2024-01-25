@@ -113,7 +113,6 @@ public class SwerveDrivetrain extends SubsystemBase {
             m_swerveModules[i].setDesiredState(swerveModuleStates[i], isOpenLoop, i);
         }
 
-
     }
 
     /**

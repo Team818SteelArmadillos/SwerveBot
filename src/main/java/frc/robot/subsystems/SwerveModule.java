@@ -62,6 +62,9 @@ public class SwerveModule {
         return m_azimuthMotor.getSelectedSensorPosition();
     }
 
+    public double getOffset(){
+        return m_offset;
+    }
     /**
      * 
      * Set the state of the individual module to the desired position 
@@ -104,6 +107,7 @@ public class SwerveModule {
         m_azimuthMotor.setInverted(m_turningInverted);
         m_azimuthMotor.setNeutralMode(NeutralMode.Brake);
         m_azimuthMotor.config_kP(0, 1);
+        
     }
 
     /**

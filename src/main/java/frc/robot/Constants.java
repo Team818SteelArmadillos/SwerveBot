@@ -38,7 +38,7 @@ public final class Constants {
   public static final int backRightRotatePort = 3;
 
   public static final int AZIMUTH_GEAR_RATIO = 3;
-  public static final int MagEncoderCPR = 4096; //NOT SURE ABT THIS
+  public static final int MagEncoderCPR = 4096; 
 
   public static final double DriverDeadzone = 0.05;
 
@@ -48,8 +48,8 @@ public final class Constants {
   public static final double backRightOffset = 219;
 
 
-  public static final double driveDistancePerPulse = (WheelDiameter * Math.PI) / MagEncoderCPR; //Assumes encoder is direct mounted, probably isn't so fix with gear ration
-  public static final double turnDistancePerPulse = (2 * Math.PI) / MagEncoderCPR;
+  public static final double driveDistancePerPulse = (WheelDiameter * Math.PI) / MagEncoderCPR; 
+  public static final double turnDistancePerPulse = 360/(AZIMUTH_GEAR_RATIO * MagEncoderCPR);
   
   public static double degreesToFalcon(double degrees){
     double ticks = degrees / (360 * (3 * 4096));

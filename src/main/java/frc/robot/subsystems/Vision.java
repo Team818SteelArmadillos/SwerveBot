@@ -50,7 +50,7 @@ public class Vision extends SubsystemBase{
         Double limelightLatencies[];
         Double xDelta[], yDelta[], rDelta[];
 
-        Pose2d swerveOdometry = RobotContainer.m_SwerveSubsystem.getCTRSwerveDrivetrain().getPoseMeters();
+        Pose2d swerveOdometry = RobotContainer.m_SwerveSubsystem.getPose();
 
         if(LimelightHelpers.getCurrentPipelineIndex(limelightName1) == 0){ //Checks if limelight 1 is looking at pieces
             limelightPoses = new Pose2d[]{ //Creates array with 3 botposes

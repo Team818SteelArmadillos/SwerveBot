@@ -10,10 +10,9 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.OI;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-
-public class SwerveDrive extends CommandBase {
+public class SwerveDrive extends Command {
 
     private double m_rotation;
     private Translation2d m_translation;

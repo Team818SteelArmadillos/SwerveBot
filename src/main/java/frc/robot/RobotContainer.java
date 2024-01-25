@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public static OI m_OI = new OI();
-  private final SwerveDrivetrain m_SwerveSubsystem = new SwerveDrivetrain();
+  public final SwerveDrivetrain m_SwerveSubsystem = new SwerveDrivetrain();
   //private final FalconSpinnySubsystem m_FalconSpinnySubsystem = new FalconSpinnySubsystem();
   //private final FalconSpinny m_FalconSpinny = new FalconSpinny(m_FalconSpinnySubsystem);
   private final SwerveDrive m_SwerveDrive = new SwerveDrive(m_SwerveSubsystem);

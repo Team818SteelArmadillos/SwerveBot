@@ -55,7 +55,7 @@ public class SwerveModule {
 
         m_azimuthMotor.set(ControlMode.Position, m_azimuthMotor.getSelectedSensorPosition());
         m_lastAngle = getState().angle.getDegrees();
-
+        zeroModule();
     }
 
     public double getRotateTicks(){

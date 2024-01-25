@@ -75,6 +75,14 @@ public class SwerveDrivetrain extends SubsystemBase {
             });
     }
 
+    public SwerveModulePosition[] getPositions(){
+        return new SwerveModulePosition[]{
+                new SwerveModulePosition(m_swerveModules[0].getDriveEncoder() * Constants.driveDistancePerPulse, m_swerveModules[0].getTurnPosition()),
+                new SwerveModulePosition(m_swerveModules[1].getDriveEncoder() * Constants.driveDistancePerPulse, m_swerveModules[1].getTurnPosition()),
+                new SwerveModulePosition(m_swerveModules[2].getDriveEncoder() * Constants.driveDistancePerPulse, m_swerveModules[2].getTurnPosition()),
+                new SwerveModulePosition(m_swerveModules[3].getDriveEncoder() * Constants.driveDistancePerPulse, m_swerveModules[3].getTurnPosition()),
+            };
+    }
     /**
      * 
      * The drive method for the drivetrain
@@ -95,10 +103,10 @@ public class SwerveDrivetrain extends SubsystemBase {
 
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.maxSpeed);
 
-        SmartDashboard.putNumber("Front Left Turn Encoder", m_swerveModules[0].getRotateTicks());
-        SmartDashboard.putNumber("Front Right Turn Encoder", m_swerveModules[1].getRotateTicks());
-        SmartDashboard.putNumber("Back Left Turn Encoder", m_swerveModules[2].getRotateTicks());
-        SmartDashboard.putNumber("Back Right Turn Encoder", m_swerveModules[3].getRotateTicks());
+        SmartDashboard.putNumber("Front Left Turn Encoder", m_swerveModules[0].getRotateTicks() - m_swerveModules[0].getOffset());
+        SmartDashboard.putNumber("Front Right Turn Encoder", m_swerveModules[1].getRotateTicks() - m_swerveModules[1].getOffset());
+        SmartDashboard.putNumber("Back Left Turn Encoder", m_swerveModules[2].getRotateTicks() - m_swerveModules[2].getOffset());
+        SmartDashboard.putNumber("Back Right Turn Encoder", m_swerveModules[3].getRotateTicks()- m_swerveModules[3].getOffset());
 
 
         for(var i = 0; i < 4; i++){

@@ -9,6 +9,7 @@ import frc.robot.subsystems.SwerveDrivetrain;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.OI;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 
@@ -72,6 +73,10 @@ public class SwerveDrive extends CommandBase {
         m_translation = new Translation2d(yAxisFiltered, xAxisFiltered).times(Constants.maxSpeed);
         m_rotation = rAxisSquared * Constants.maxRotation * 0.5;
         m_swerveDrivetrain.drive(m_translation, m_rotation, true, true);
+
+        SmartDashboard.putNumber("Rot", m_rotation);
+        SmartDashboard.putNumber("X", m_translation.getX());
+        SmartDashboard.putNumber("Y", m_translation.getY());
 
     }
 }

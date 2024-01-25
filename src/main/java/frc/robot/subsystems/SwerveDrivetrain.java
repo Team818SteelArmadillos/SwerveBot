@@ -38,7 +38,32 @@ public class SwerveDrivetrain extends SubsystemBase {
         m_gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 12000);
         m_gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.RawStatus_4_Mag, 13000);
         m_gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_6_Accel, 14000); */
-
+        m_swerveModules = new SwerveModule[] {
+            new SwerveModule(0, 
+                             Constants.frontLeftRotatePort, 
+                             Constants.frontLeftDrivePort, 
+                             false,
+                             false,
+                             Constants.frontLeftOffset),
+            new SwerveModule(1,
+                             Constants.frontRightRotatePort,
+                             Constants.frontRightDrivePort,
+                             false,
+                             false,
+                             Constants.frontRightOffset),
+            new SwerveModule(2,
+                             Constants.backLeftRotatePort,
+                             Constants.backLeftDrivePort,
+                             true,
+                             false,
+                             Constants.backLeftOffset),
+            new SwerveModule(3,
+                             Constants.backRightRotatePort,
+                             Constants.backRightDrivePort,
+                             false,
+                             false,
+                             Constants.backRightOffset)        
+                            };
         m_swerveOdometry = new SwerveDriveOdometry(
             Constants.kinematics, 
             getYaw(),
@@ -48,30 +73,6 @@ public class SwerveDrivetrain extends SubsystemBase {
                 new SwerveModulePosition(m_swerveModules[2].getDriveEncoder() * Constants.driveDistancePerPulse, m_swerveModules[2].getTurnPosition()),
                 new SwerveModulePosition(m_swerveModules[3].getDriveEncoder() * Constants.driveDistancePerPulse, m_swerveModules[3].getTurnPosition()),
             });
-
-        m_swerveModules = new SwerveModule[] {
-            new SwerveModule(0, 
-                             Constants.frontLeftRotatePort, 
-                             Constants.frontLeftDrivePort, 
-                             false,
-                             false),
-            new SwerveModule(1,
-                             Constants.frontRightRotatePort,
-                             Constants.frontRightDrivePort,
-                             false,
-                             false),
-            new SwerveModule(2,
-                             Constants.backLeftRotatePort,
-                             Constants.backLeftDrivePort,
-                             false,
-                             false),
-            new SwerveModule(3,
-                             Constants.backRightRotatePort,
-                             Constants.backRightDrivePort,
-                             false,
-                             false)        
-                            };
-
     }
 
     /**
@@ -94,8 +95,14 @@ public class SwerveDrivetrain extends SubsystemBase {
 
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.maxSpeed);
 
-        for(SwerveModule module : m_swerveModules){
-            module.setDesiredState(swerveModuleStates[module.m_moduleNumber], isOpenLoop);
+        SmartDashboard.putNumber("Front Left Turn Encoder", m_swerveModules[0].getRotateTicks());
+        SmartDashboard.putNumber("Front Right Turn Encoder", m_swerveModules[1].getRotateTicks());
+        SmartDashboard.putNumber("Back Left Turn Encoder", m_swerveModules[2].getRotateTicks());
+        SmartDashboard.putNumber("Back Right Turn Encoder", m_swerveModules[3].getRotateTicks());
+
+
+        for(var i = 0; i < 4; i++){
+            m_swerveModules[i].setDesiredState(swerveModuleStates[i], isOpenLoop, i);
         }
 
 
@@ -112,8 +119,8 @@ public class SwerveDrivetrain extends SubsystemBase {
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.maxSpeed);
         
-        for(SwerveModule mod : m_swerveModules){
-            mod.setDesiredState(desiredStates[mod.m_moduleNumber], false);
+        for(var i = 0; i < 4; i++){
+            m_swerveModules[i].setDesiredState(desiredStates[i], false, i);
         }
     }
 
@@ -327,6 +334,8 @@ public class SwerveDrivetrain extends SubsystemBase {
                 new SwerveModulePosition(m_swerveModules[2].getDriveEncoder() * Constants.driveDistancePerPulse, m_swerveModules[2].getTurnPosition()),
                 new SwerveModulePosition(m_swerveModules[3].getDriveEncoder() * Constants.driveDistancePerPulse, m_swerveModules[3].getTurnPosition()),
             });
+
+
 
         SmartDashboard.putNumber("pose x", getPose().getX());
         SmartDashboard.putNumber("pose y", getPose().getY());

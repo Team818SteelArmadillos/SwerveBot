@@ -3,10 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
-
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -15,7 +11,7 @@ import edu.wpi.first.math.util.Units;
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
- *
+ *d
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
@@ -33,12 +29,12 @@ public final class Constants {
   
   public static final int frontLeftDrivePort = 5;
   public static final int frontRightDrivePort = 4;
-  public static final int backLeftDrivePort = 10;
+  public static final int backLeftDrivePort = 1;
   public static final int backRightDrivePort = 2;
   
   public static final int frontLeftRotatePort = 6;
   public static final int frontRightRotatePort = 7;
-  public static final int backLeftRotatePort = 1;
+  public static final int backLeftRotatePort = 10;
   public static final int backRightRotatePort = 3;
 
   public static final int AZIMUTH_GEAR_RATIO = 3;
@@ -46,12 +42,22 @@ public final class Constants {
 
   public static final double DriverDeadzone = 0.05;
 
+  public static final double frontLeftOffset = -1532;
+  public static final double frontRightOffset = -1038;
+  public static final double backLeftOffset = 5494 - 4096;
+  public static final double backRightOffset = 219;
+
+
   public static final double driveDistancePerPulse = (WheelDiameter * Math.PI) / MagEncoderCPR; //Assumes encoder is direct mounted, probably isn't so fix with gear ration
   public static final double turnDistancePerPulse = (2 * Math.PI) / MagEncoderCPR;
   
   public static double degreesToFalcon(double degrees){
     double ticks = degrees / (360 * (3 * 4096));
     return ticks;
+  }
+
+  public static double tickstoDegrees(double ticks){
+    return ticks/4096 * 360;
   }
     // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
     // These characterization values MUST be determined either experimentally or theoretically

@@ -7,8 +7,6 @@ package frc.robot;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import frc.robot.Constants;
-
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -28,7 +26,7 @@ public class Conversions {
 
     public static double falconToDegrees(double counts, double gearRatio) {
 
-        return counts * (360.0 / (gearRatio * 2048.0));
+        return counts * (360.0 / (gearRatio * 4096));
 
     }
 
@@ -44,7 +42,7 @@ public class Conversions {
 
     public static double degreesToFalcon(double degrees, double gearRatio) {
 
-        double ticks =  degrees / (360.0 / (gearRatio * 2048.0));
+        double ticks =  degrees / (360.0 / (gearRatio * 4096.0));
         return ticks;
 
     }
@@ -61,7 +59,7 @@ public class Conversions {
 
     public static double falconToRPM(double velocityCounts, double gearRatio) {
 
-        double motorRPM = velocityCounts * (600.0 / 2048.0);        
+        double motorRPM = velocityCounts * (600.0 / 4096.0);        
         double mechRPM = motorRPM / gearRatio;
         return mechRPM;
 
@@ -80,7 +78,7 @@ public class Conversions {
     public static double RPMToFalcon(double RPM, double gearRatio) {
 
         double motorRPM = RPM * gearRatio;
-        double sensorCounts = motorRPM * (2048.0 / 600.0);
+        double sensorCounts = motorRPM * (4096.0 / 600.0);
         return sensorCounts;
 
     }

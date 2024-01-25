@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -38,18 +39,26 @@ public class SwerveModule {
      * 
      */
 
-    public SwerveModule(int moduleNumber, int azimuthMotor, int driveMotor, boolean azimuthInverted, boolean driveInverted){
+    public SwerveModule(int moduleNumber, int azimuthMotor, int driveMotor, boolean azimuthInverted, boolean driveInverted, double offset){
         m_moduleNumber = moduleNumber;
         m_turningInverted = azimuthInverted;
         m_driveInverted = driveInverted;
+        m_offset = offset;
+
+
 
         m_azimuthMotor = new WPI_TalonSRX(azimuthMotor);
         m_driveMotor = new WPI_TalonSRX(driveMotor);
 
-        configTurningMotor();
-        configDriveMotor();   
+        configTurningMotor(azimuthMotor);
+        configDriveMotor();
 
+        m_azimuthMotor.set(ControlMode.Position, m_azimuthMotor.getSelectedSensorPosition());
         m_lastAngle = getState().angle.getDegrees();
+    }
+
+    public double getRotateTicks(){
+        return m_azimuthMotor.getSelectedSensorPosition();
     }
 
     /**
@@ -61,7 +70,7 @@ public class SwerveModule {
      * 
      */
 
-    public void setDesiredState(SwerveModuleState desiredState, boolean openLoop) {
+    public void setDesiredState(SwerveModuleState desiredState, boolean openLoop, int moduleNumber) {
 
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
 
@@ -76,6 +85,7 @@ public class SwerveModule {
 
         double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.maxSpeed * 0.01)) ? m_lastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less then 1%. Prevents Jittering.
        
+        SmartDashboard.putNumber("Angle", Conversions.degreesToFalcon(angle, Constants.AZIMUTH_GEAR_RATIO));
         m_azimuthMotor.set(ControlMode.Position, Conversions.degreesToFalcon(angle, Constants.AZIMUTH_GEAR_RATIO));
 
         m_lastAngle = angle;
@@ -87,11 +97,12 @@ public class SwerveModule {
      * 
      */
 
-    private void configTurningMotor() {
+    private void configTurningMotor(int azimuthMotor) {
         m_azimuthMotor.configFactoryDefault();
         m_azimuthMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         m_azimuthMotor.setInverted(m_turningInverted);
         m_azimuthMotor.setNeutralMode(NeutralMode.Brake);
+        m_azimuthMotor.config_kP(0, 1);
     }
 
     /**
@@ -115,7 +126,7 @@ public class SwerveModule {
      */
 
     public Rotation2d getTurnPosition() {
-        return Rotation2d.fromDegrees(m_azimuthMotor.getSelectedSensorPosition());
+        return Rotation2d.fromDegrees(Constants.tickstoDegrees(m_azimuthMotor.getSelectedSensorPosition()));
     }
 
     /**

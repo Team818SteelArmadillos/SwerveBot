@@ -24,7 +24,7 @@ public class Conversions {
      * 
      */
 
-    public static double falconToDegrees(double counts, double gearRatio) {
+    public static double tickstoDegrees(double counts, double gearRatio) {
 
         return counts * (360.0 / (gearRatio * 4096));
 
@@ -40,7 +40,7 @@ public class Conversions {
      * 
      */
 
-    public static double degreesToFalcon(double degrees, double gearRatio) {
+    public static double degreestoTicks(double degrees, double gearRatio) {
 
         double ticks =  degrees / (360.0 / (gearRatio * 4096.0));
         return ticks;
@@ -57,7 +57,7 @@ public class Conversions {
      * 
      */
 
-    public static double falconToRPM(double velocityCounts, double gearRatio) {
+    public static double tickstoRPM(double velocityCounts, double gearRatio) {
 
         double motorRPM = velocityCounts * (600.0 / 4096.0);        
         double mechRPM = motorRPM / gearRatio;
@@ -75,7 +75,7 @@ public class Conversions {
      * 
      */
 
-    public static double RPMToFalcon(double RPM, double gearRatio) {
+    public static double RPMtoTicks(double RPM, double gearRatio) {
 
         double motorRPM = RPM * gearRatio;
         double sensorCounts = motorRPM * (4096.0 / 600.0);
@@ -94,9 +94,9 @@ public class Conversions {
      * 
      */
 
-    public static double falconToMPS(double velocitycounts, double circumference, double gearRatio){
+    public static double tickstoMPS(double velocitycounts, double circumference, double gearRatio){
 
-        double wheelRPM = falconToRPM(velocitycounts, gearRatio);
+        double wheelRPM = tickstoRPM(velocitycounts, gearRatio);
         double wheelMPS = (wheelRPM * circumference) / 60;
         return wheelMPS;
 
@@ -113,37 +113,12 @@ public class Conversions {
      * 
      */
 
-    public static double MPSToFalcon(double velocity, double circumference, double gearRatio){
+    public static double MPStoTicks(double velocity, double circumference, double gearRatio){
 
         double wheelRPM = ((velocity * 60) / circumference);
-        double wheelVelocity = RPMToFalcon(wheelRPM, gearRatio);
+        double wheelVelocity = RPMtoTicks(wheelRPM, gearRatio);
         return wheelVelocity;
 
     }
-
-    /**
-     * 
-     * Convert a CSV file to a WPILIB Trajectory
-     * 
-     * @return A trajectory generated from a JSON csv file
-     * 
-     */
-
-    public static Trajectory toTrajectory(String path) {
-
-        String trajectoryJSON = path;
-        try {
-            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-            Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-            return trajectory;
-        } catch (IOException e) {
-            SmartDashboard.putString("conversion error", e.toString());
-            return null;
-        }
-
-    }
-
-
-    
 
 }

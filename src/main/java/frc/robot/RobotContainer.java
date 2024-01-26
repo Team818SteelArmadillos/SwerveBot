@@ -30,7 +30,6 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     m_SwerveSubsystem.setDefaultCommand(m_SwerveDrive); 
-    m_Vision.setDefaultCommand(m_VisionController);
     //m_FalconSpinnySubsystem.setDefaultCommand(m_FalconSpinny);
     // Configure the trigger bindings
     configureBindings();

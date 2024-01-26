@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -43,7 +44,8 @@ public class SwerveModule {
         m_moduleNumber = moduleNumber;
         m_turningInverted = azimuthInverted;
         m_driveInverted = driveInverted;
-        m_offset = offset;
+        m_offset = Conversions.tickstoDegrees(offset, Constants.AZIMUTH_GEAR_RATIO);
+        m_lastAngle = m_offset;
 
 
 
@@ -52,9 +54,6 @@ public class SwerveModule {
 
         configTurningMotor(azimuthMotor);
         configDriveMotor();
-
-        m_azimuthMotor.set(ControlMode.Position, m_azimuthMotor.getSelectedSensorPosition());
-        m_lastAngle = getState().angle.getDegrees();
         zeroModule();
     }
 
@@ -77,20 +76,21 @@ public class SwerveModule {
     public void setDesiredState(SwerveModuleState desiredState, boolean openLoop, int moduleNumber) {
 
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
+        m_azimuthMotor.set(ControlMode.Position, Conversions.degreestoTicks(0, Constants.AZIMUTH_GEAR_RATIO));
 
         if(openLoop){
             m_driveMotor.set(ControlMode.PercentOutput, desiredState.speedMetersPerSecond / Constants.maxSpeed);
         } else {
             m_driveMotor.set(ControlMode.Velocity, 
-                             Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.WheelDiameter * Math.PI, 1), 
+                             Conversions.MPStoTicks(desiredState.speedMetersPerSecond, Constants.WheelDiameter * Math.PI, 1), 
                              DemandType.ArbitraryFeedForward, 
                              feedforward.calculate(desiredState.speedMetersPerSecond));
         }
 
-        double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.maxSpeed * 0.01)) ? m_lastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less then 1%. Prevents Jittering.
-       
-        SmartDashboard.putNumber("Angle", Conversions.degreesToFalcon(angle, Constants.AZIMUTH_GEAR_RATIO));
-        m_azimuthMotor.set(ControlMode.Position, Conversions.degreesToFalcon(angle - m_offset, Constants.AZIMUTH_GEAR_RATIO));
+        double angle = Math.abs(desiredState.angle.getRadians()) <= (Constants.maxRotation * 0.01) ? m_lastAngle : (desiredState.angle.getDegrees() + 90); //Prevent rotating module if speed is less then 1%. Prevents Jittering.
+        double ticks = Conversions.degreestoTicks(angle, Constants.AZIMUTH_GEAR_RATIO);
+        SmartDashboard.putNumber("Desired Ticks", ticks);
+        m_azimuthMotor.set(ControlMode.Position, ticks + m_offset); //Not sure about this
 
         m_lastAngle = angle;
     }
@@ -107,6 +107,8 @@ public class SwerveModule {
         m_azimuthMotor.setInverted(m_turningInverted);
         m_azimuthMotor.setNeutralMode(NeutralMode.Brake);
         m_azimuthMotor.config_kP(0, 1);
+        m_azimuthMotor.config_kD(0, 0.1);
+
         
     }
 
@@ -131,7 +133,7 @@ public class SwerveModule {
      */
 
     public Rotation2d getTurnPosition() {
-        return Rotation2d.fromDegrees(Constants.tickstoDegrees(m_azimuthMotor.getSelectedSensorPosition()));
+        return Rotation2d.fromDegrees(Conversions.tickstoDegrees(m_azimuthMotor.getSelectedSensorPosition(), Constants.AZIMUTH_GEAR_RATIO));
     }
 
     /**
@@ -152,8 +154,8 @@ public class SwerveModule {
 
     public SwerveModuleState getState() {
 
-        double velocity = Conversions.falconToMPS(m_driveMotor.getSelectedSensorVelocity(), Constants.WheelDiameter * Math.PI, 1);
-        Rotation2d angle = Rotation2d.fromDegrees(Conversions.falconToDegrees(m_azimuthMotor.getSelectedSensorPosition(), Constants.AZIMUTH_GEAR_RATIO));
+        double velocity = Conversions.tickstoMPS(m_driveMotor.getSelectedSensorVelocity(), Constants.WheelDiameter * Math.PI, 1);
+        Rotation2d angle = Rotation2d.fromDegrees(Conversions.tickstoDegrees(m_azimuthMotor.getSelectedSensorPosition(), Constants.AZIMUTH_GEAR_RATIO));
         return new SwerveModuleState(velocity, angle);
 
     }
@@ -165,8 +167,6 @@ public class SwerveModule {
      */
 
     public void zeroModule() {
-        m_azimuthMotor.setSelectedSensorPosition(Conversions.degreesToFalcon(-m_offset, Constants.AZIMUTH_GEAR_RATIO));
+        m_azimuthMotor.set(ControlMode.Position, Conversions.degreestoTicks(0, Constants.AZIMUTH_GEAR_RATIO));
     }
-
-
 }

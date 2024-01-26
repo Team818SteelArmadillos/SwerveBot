@@ -42,23 +42,16 @@ public final class Constants {
 
   public static final double DriverDeadzone = 0.05;
 
-  public static final double frontLeftOffset = -1532;
-  public static final double frontRightOffset = -1038;
-  public static final double backLeftOffset = 5494 - 4096;
-  public static final double backRightOffset = 219;
+  public static final double frontLeftOffset = 0;
+  public static final double frontRightOffset = 0;
+  public static final double backLeftOffset = 0;
+  public static final double backRightOffset = 0;
 
 
   public static final double driveDistancePerPulse = (WheelDiameter * Math.PI) / MagEncoderCPR; 
   public static final double turnDistancePerPulse = 360/(AZIMUTH_GEAR_RATIO * MagEncoderCPR);
-  
-  public static double degreesToFalcon(double degrees){
-    double ticks = degrees / (360 * (3 * 4096));
-    return ticks;
-  }
 
-  public static double tickstoDegrees(double ticks){
-    return ticks/4096 * 360;
-  }
+  
     // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
     // These characterization values MUST be determined either experimentally or theoretically
     // for *your* robot's drive.

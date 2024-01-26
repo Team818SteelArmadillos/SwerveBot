@@ -70,7 +70,7 @@ public class SwerveDrive extends Command {
 
         /* Input variables into drive methods */
         m_translation = new Translation2d(yAxisFiltered, xAxisFiltered).times(Constants.maxSpeed);
-        m_rotation = rAxisSquared * Constants.maxRotation * 0.5;
+        m_rotation = (rAxisSquared * Constants.maxRotation * 0.5);
         m_swerveDrivetrain.drive(m_translation, m_rotation, true, true);
 
         SmartDashboard.putNumber("Rot", m_rotation);

@@ -37,15 +37,15 @@ public final class Constants {
   public static final int backLeftRotatePort = 10;
   public static final int backRightRotatePort = 3;
 
-  public static final int AZIMUTH_GEAR_RATIO = 3;
+  public static final int AZIMUTH_GEAR_RATIO = 1;
   public static final int MagEncoderCPR = 4096; 
 
   public static final double DriverDeadzone = 0.05;
 
-  public static final double frontLeftOffset = 0;
-  public static final double frontRightOffset = 0;
-  public static final double backLeftOffset = 0;
-  public static final double backRightOffset = 0;
+  public static final double frontLeftOffset = 2230;
+  public static final double frontRightOffset = 900;
+  public static final double backLeftOffset = 2260;
+  public static final double backRightOffset = 1930;
 
 
   public static final double driveDistancePerPulse = (WheelDiameter * Math.PI) / MagEncoderCPR; 

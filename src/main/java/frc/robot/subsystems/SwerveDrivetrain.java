@@ -54,7 +54,7 @@ public class SwerveDrivetrain extends SubsystemBase {
             new SwerveModule(2,
                              Constants.backLeftRotatePort,
                              Constants.backLeftDrivePort,
-                             true,
+                             false,
                              false,
                              Constants.backLeftOffset),
             new SwerveModule(3,

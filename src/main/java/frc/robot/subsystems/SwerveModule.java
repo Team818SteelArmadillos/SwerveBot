@@ -44,17 +44,22 @@ public class SwerveModule {
         m_moduleNumber = moduleNumber;
         m_turningInverted = azimuthInverted;
         m_driveInverted = driveInverted;
-        m_offset = Conversions.tickstoDegrees(offset, Constants.AZIMUTH_GEAR_RATIO);
-        m_lastAngle = m_offset;
-
+        m_offset = offset;
 
 
         m_azimuthMotor = new WPI_TalonSRX(azimuthMotor);
         m_driveMotor = new WPI_TalonSRX(driveMotor);
 
+
+
         configTurningMotor(azimuthMotor);
         configDriveMotor();
-        zeroModule();
+
+        m_lastAngle = Conversions.tickstoDegrees(m_azimuthMotor.getSelectedSensorPosition(), 1);
+
+        m_azimuthMotor.set(ControlMode.Position, m_offset);
+
+        //zeroModule();
     }
 
     public double getRotateTicks(){
@@ -76,7 +81,6 @@ public class SwerveModule {
     public void setDesiredState(SwerveModuleState desiredState, boolean openLoop, int moduleNumber) {
 
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
-        m_azimuthMotor.set(ControlMode.Position, Conversions.degreestoTicks(0, Constants.AZIMUTH_GEAR_RATIO));
 
         if(openLoop){
             m_driveMotor.set(ControlMode.PercentOutput, desiredState.speedMetersPerSecond / Constants.maxSpeed);
@@ -87,10 +91,10 @@ public class SwerveModule {
                              feedforward.calculate(desiredState.speedMetersPerSecond));
         }
 
-        double angle = Math.abs(desiredState.angle.getRadians()) <= (Constants.maxRotation * 0.01) ? m_lastAngle : (desiredState.angle.getDegrees() + 90); //Prevent rotating module if speed is less then 1%. Prevents Jittering.
-        double ticks = Conversions.degreestoTicks(angle, Constants.AZIMUTH_GEAR_RATIO);
+        double angle = Math.abs(desiredState.angle.getRadians()) <= (Constants.maxRotation * 0.01) ? m_lastAngle : (desiredState.angle.getDegrees()); //Prevent rotating module if speed is less then 1%. Prevents Jittering.
+        double ticks = Conversions.degreestoTicks(angle, 1);
         SmartDashboard.putNumber("Desired Ticks", ticks);
-        m_azimuthMotor.set(ControlMode.Position, ticks + m_offset); //Not sure about this
+        m_azimuthMotor.set(ControlMode.Position, ticks);
 
         m_lastAngle = angle;
     }
@@ -107,7 +111,7 @@ public class SwerveModule {
         m_azimuthMotor.setInverted(m_turningInverted);
         m_azimuthMotor.setNeutralMode(NeutralMode.Brake);
         m_azimuthMotor.config_kP(0, 1);
-        m_azimuthMotor.config_kD(0, 0.1);
+        m_azimuthMotor.config_kD(0, 0);
 
         
     }
@@ -167,6 +171,6 @@ public class SwerveModule {
      */
 
     public void zeroModule() {
-        m_azimuthMotor.set(ControlMode.Position, Conversions.degreestoTicks(0, Constants.AZIMUTH_GEAR_RATIO));
+        m_azimuthMotor.set(ControlMode.Position, Conversions.degreestoTicks(m_offset, Constants.AZIMUTH_GEAR_RATIO));
     }
 }

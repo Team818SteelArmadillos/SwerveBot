@@ -22,6 +22,7 @@ public final class Constants {
 
   public static final int FalconPortFunTime = 0;
   public static final double WheelDiameter = Units.inchesToMeters(2);
+  public static final double WheelRadius = WheelDiameter/2.0;
   public static final double DriveMotorGearRatio = 3;
   public static final int pigeonID = 11;
   public static final double maxSpeed = 13; //meters per second
@@ -37,15 +38,23 @@ public final class Constants {
   public static final int backLeftRotatePort = 10;
   public static final int backRightRotatePort = 3;
 
+
+  //PID Values
+  public static final double STEER_GAINS_KP = 1;
+  public static final double STEER_GAINS_KD = 0;
+
+  public static final double DRIVE_GAINS_KP = 1;
+  public static final double DRIVE_TURN_KD = 0;
+
   public static final int AZIMUTH_GEAR_RATIO = 1;
   public static final int MagEncoderCPR = 4096; 
 
   public static final double DriverDeadzone = 0.05;
 
-  public static final double frontLeftOffset = 2230;
-  public static final double frontRightOffset = 900;
-  public static final double backLeftOffset = 2260;
-  public static final double backRightOffset = 1930;
+  public static final double frontLeftOffset = 450;
+  public static final double frontRightOffset = 1000;
+  public static final double backLeftOffset = 670;
+  public static final double backRightOffset = 2100;
 
 
   public static final double driveDistancePerPulse = (WheelDiameter * Math.PI) / MagEncoderCPR; 

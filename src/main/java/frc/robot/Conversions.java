@@ -26,7 +26,7 @@ public class Conversions {
 
     public static double tickstoDegrees(double counts, double gearRatio) {
 
-        return counts * (360.0 / (gearRatio * 4096));
+        return  360.0 * (counts / (gearRatio * 4096));
 
     }
 
@@ -42,7 +42,7 @@ public class Conversions {
 
     public static double degreestoTicks(double degrees, double gearRatio) {
 
-        double ticks =  degrees / (360.0 / (gearRatio * 4096.0));
+        double ticks =  (degrees / 360.0) * (gearRatio * 4096.0);
         return ticks;
 
     }

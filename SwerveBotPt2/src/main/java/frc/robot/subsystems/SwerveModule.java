@@ -11,9 +11,11 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Add your docs here. */
-public class SwerveModule 
+public class SwerveModule extends SubsystemBase
 {
     private TalonSRX m_driveMotor;
     private TalonSRX m_azimuthMotor;
@@ -25,7 +27,6 @@ public class SwerveModule
         m_azimuthMotor = new TalonSRX(azimuthMotorPort);
 
         m_offset = offset;
-        optimized = false;
 
         m_driveMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -35,34 +36,29 @@ public class SwerveModule
 
     public void set(double angleDeg, double driveSpeedOutput)
     {
-        double angleToSet;
+        double currentAngle = getAngle();
+        double angleToSet_delta = (angleDeg % 360) - (currentAngle % 360);
         double speedToSet = driveSpeedOutput;
         
-        double currentAngle = getAngle();
         
-        if (determineOptimize(angleDeg, currentAngle))
+        if (isOptimized(angleToSet_delta))
         {
-            angleToSet = 
+            angleToSet_delta = ((angleDeg + 180) % 360) - (currentAngle % 360);
             speedToSet = -driveSpeedOutput;
         }
         else
         {
-            angleToSet = angleDeg;
-            speedToSet = driveSpeedOutput;
+           // do nothing
         }
-
-        angleToSet = angleDeg;
-        speedToSet = driveSpeedOutput;
-
-        m_azimuthMotor.set(ControlMode.Position, angleToSet);
+        
+        m_azimuthMotor.set(ControlMode.Position, degreesToTicks(currentAngle + angleToSet_delta));
         m_driveMotor.set(ControlMode.PercentOutput, speedToSet);
     }
 
-    private boolean determineOptimize(double targetAngle, double currentAngle)
+    private boolean isOptimized(double angleDelta)
     {
-        double angleDelta = Math.abs(currentAngle - targetAngle);
 
-        if (angleDelta > 90)
+        if (angleDelta > 90.0)
         {
             return true;
         }

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.subsystems.Swerve;
 
@@ -36,13 +37,14 @@ public class Drive extends Command {
     if(Math.abs(leftX) < 0.3){
       leftX = 0;
     }
-    if(Math.abs(leftY) < 0.3){
+    if(Math.abs(leftY) < 
+    0.3){
       leftY = 0;
     }
     if(Math.abs(rightX) < 0.3){
       rightX = 0;
     }
-    m_Swerve.drive(-leftX, -leftY, -rightX);
+    m_Swerve.drive(-leftX * Constants.maxSpeed, -leftY * Constants.maxSpeed, -rightX * Constants.maxAngularSpeed.getRadians());
   }
 
   // Called once the command ends or is interrupted.

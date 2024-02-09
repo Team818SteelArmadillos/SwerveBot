@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -37,7 +39,7 @@ public final class Constants {
   public static final double backLeftAzimuthOffset = 0;
   public static final double backRightAzimuthOffset = 0;
 
-  public static final double m_ChasisLength = 26;
+  public static final double m_ChasisLength = Units.feetToMeters(26);
 
   public static final SwerveDriveKinematics m_Kinematics = new SwerveDriveKinematics(
   new Translation2d(m_ChasisLength/2, m_ChasisLength/2), 
@@ -46,7 +48,19 @@ public final class Constants {
   new Translation2d(-m_ChasisLength/2, -m_ChasisLength/2)
   );
 
+
+  public static final double maxSpeed = Units.feetToMeters(15);
+  public static final Rotation2d maxAngularSpeed = new Rotation2d(1.5);
   public static final int PigeonID = 11;
+
+  public static double ticksToDegrees(double ticks){
+    return ticks * (360.0 / (4096));
+  }
+  public static double rotationToTicks(Rotation2d rotation){
+    double rotationDegrees = rotation.getDegrees();
+    double returnValue = (4096 * rotationDegrees) /360;
+    return returnValue;
+  }
 
 
 

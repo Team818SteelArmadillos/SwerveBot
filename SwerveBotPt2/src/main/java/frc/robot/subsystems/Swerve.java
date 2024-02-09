@@ -8,6 +8,8 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -21,12 +23,13 @@ public class Swerve extends SubsystemBase{
             new SwerveModule(Constants.frontLeftDrivePort, Constants.frontLeftAzimuthPort, Constants.frontLeftAzimuthOffset, Constants.frontLeftAzimuthInverted),
             new SwerveModule(Constants.frontRightDrivePort, Constants.frontRightAzimuthPort, Constants.frontRightAzimuthOffset, Constants.frontRightAzimuthInverted),
             new SwerveModule(Constants.backLeftDrivePort, Constants.backLeftAzimuthPort, Constants.backLeftAzimuthOffset, Constants.backLeftAzimuthInverted),
-            new SwerveModule(Constants.frontRightDrivePort, Constants.frontRightAzimuthPort, Constants.frontRightAzimuthOffset, Constants.frontRightAzimuthInverted),
+            new SwerveModule(Constants.backRightDrivePort, Constants.backRightAzimuthPort, Constants.backRightAzimuthOffset, Constants.backRightAzimuthInverted),
         };
 
         for(var i = 0; i < m_modules.length; i++){
-            m_modules[i].set(0, 0);
+            m_modules[i].set(new SwerveModuleState());
         }
+
     }
 
     public Rotation2d getRotation(){
@@ -35,16 +38,19 @@ public class Swerve extends SubsystemBase{
 
     public void drive(double xTranslation, double yTranslation, double rotateSpeed){
         var currentAngle = m_pigeon.getRotation2d();
+        var maxSpeed = 13;
+        var maxAngularSpeed = 1;
 
         ChassisSpeeds fieldSpeeds = new ChassisSpeeds(xTranslation, yTranslation, rotateSpeed);
 
         ChassisSpeeds robotSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(fieldSpeeds, currentAngle);
 
         var swerveStates = Constants.m_Kinematics.toSwerveModuleStates(robotSpeeds);
+        SmartDashboard.putNumber("Front Left Desired State", swerveStates[1].angle.getDegrees());
 
         for(var i = 0; i < m_modules.length; i++){
-            m_modules[i].set(swerveStates[i].angle.getDegrees(), swerveStates[i].speedMetersPerSecond);
+            m_modules[i].set(swerveStates[i]);
         }
-
+       
     }
 }

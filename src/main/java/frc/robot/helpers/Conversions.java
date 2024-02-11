@@ -1,14 +1,6 @@
 package frc.robot.subsystems;
 
-import java.io.IOException;
-import java.nio.file.Path;
-
 import frc.robot.Constants;
-
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Conversions {
 
@@ -24,7 +16,7 @@ public class Conversions {
 
     public static double falconToDegrees(double counts, double gearRatio) {
 
-        return counts * (360.0 / (gearRatio * 4096.0));
+        return counts * (360.0 / (gearRatio * Constants.TICKS_PER_REVOLUTION));
 
     }
 
@@ -40,7 +32,7 @@ public class Conversions {
 
     public static double degreesToFalcon(double degrees, double gearRatio) {
 
-        double ticks =  degrees * ((gearRatio * 4096.0) / 360.0);
+        double ticks =  degrees * ((gearRatio * Constants.TICKS_PER_REVOLUTION) / 360.0);
         return ticks;
 
     }
@@ -57,7 +49,7 @@ public class Conversions {
 
     public static double falconToRPM(double velocityCounts, double gearRatio) {
 
-        double motorRPM = velocityCounts * (600.0 / 4096.0);        
+        double motorRPM = velocityCounts * (600.0 / Constants.TICKS_PER_REVOLUTION);        
         double mechRPM = motorRPM / gearRatio;
         return mechRPM;
 
@@ -76,7 +68,7 @@ public class Conversions {
     public static double RPMToFalcon(double RPM, double gearRatio) {
 
         double motorRPM = RPM * gearRatio;
-        double sensorCounts = motorRPM * (4096.0 / 600.0);
+        double sensorCounts = motorRPM * (Constants.TICKS_PER_REVOLUTION / 600.0);
         return sensorCounts;
 
     }

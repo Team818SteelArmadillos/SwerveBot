@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.kinematics.struct.SwerveModuleStateStruct;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -17,10 +16,7 @@ public class RobotContainer {
   public XboxController xboxXontroller = new XboxController(0);
   public SwerveDrive swerveDrive_command = new SwerveDrive(
     swerveDrivetrain_subsystem, 
-    xboxXontroller, 
-    XboxController.Axis.kLeftY.value, 
-    XboxController.Axis.kLeftX.value, 
-    XboxController.Axis.kRightX.value, 
+    xboxXontroller,
     true, 
     false);
 

@@ -8,14 +8,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import frc.robot.Constants;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.helpers.SwerveModule;
 
 public class SwerveDrivetrain extends SubsystemBase {
 
@@ -34,10 +33,6 @@ public class SwerveDrivetrain extends SubsystemBase {
 
     public SwerveDrivetrain() {
         m_gyro = new Pigeon2(Constants.PIGEON);
-        /*m_gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_3_GeneralAccel, 11000);
-        m_gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 12000);
-        m_gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.RawStatus_4_Mag, 13000);
-        m_gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_6_Accel, 14000); */
 
         m_swerveModules = new SwerveModule[] {
             new SwerveModule(0, 
@@ -74,7 +69,9 @@ public class SwerveDrivetrain extends SubsystemBase {
                              Constants.BACK_RIGHT_CANCODER_REVERSED)
         };
 
-        //m_swerveOdometry = new SwerveDriveOdometry(Constants.swerveKinematics, getYaw());
+        m_swerveModulePositions = getLatestModulePositions();
+
+        m_swerveOdometry = new SwerveDriveOdometry(Constants.swerveKinematics, getYaw(), m_swerveModulePositions);
 
     }
 
@@ -139,9 +136,9 @@ public class SwerveDrivetrain extends SubsystemBase {
      * 
      */
 
-    // public Pose2d getPose() {
-    //     return m_swerveOdometry.getPoseMeters();
-    // }
+    public Pose2d getPose() {
+        return m_swerveOdometry.getPoseMeters();
+    }
 
     /**
      * 
@@ -151,13 +148,13 @@ public class SwerveDrivetrain extends SubsystemBase {
      * 
      */
 
-    // public void resetOdometry(Pose2d pose) {
-    //     m_swerveOdometry.resetPosition(pose, getYaw());
-    // }
+    public void resetOdometry(Pose2d pose) {
+        m_swerveOdometry.resetPosition(getYaw(), getLatestModulePositions(), pose);
+    }
 
-    // public void resetOdometryWithYaw(Pose2d pose, Rotation2d degrees) {
-    //     m_swerveOdometry.resetPosition(pose, degrees);
-    // }
+    public void resetOdometryWithYaw(Pose2d pose, Rotation2d degrees) {
+        m_swerveOdometry.resetPosition(degrees, getLatestModulePositions(), pose);
+    }
 
     /**
      * 
@@ -212,20 +209,6 @@ public class SwerveDrivetrain extends SubsystemBase {
     public void resetGyro() {
         m_gyro.setYaw(0);
     }
-
-    /**
-     * 
-     * Sets all module positions to 0 no matter their orientation
-     * 
-     */
-
-    // public void zeroModules() {
-
-    //     for(SwerveModule mod: m_swerveModules) {
-    //         mod.zeroModule();
-    //     }
-
-    // }
 
     /**
      * 
@@ -300,6 +283,19 @@ public class SwerveDrivetrain extends SubsystemBase {
         m_gyro.setYaw(yawMod);
     }
 
+    public SwerveModulePosition[] getLatestModulePositions()
+    {
+        SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[]
+        {
+            m_swerveModules[0].getPosition(),
+            m_swerveModules[1].getPosition(),
+            m_swerveModules[2].getPosition(),
+            m_swerveModules[3].getPosition(),
+        };
+
+        return swerveModulePositions;
+    }
+
     /**
      * 
      * Updates odometry with current theta angle and module states
@@ -310,13 +306,11 @@ public class SwerveDrivetrain extends SubsystemBase {
 
     @Override
     public void periodic(){
-        
-        //m_swerveOdometry.update(getYaw(), getStates());
+        m_swerveOdometry.update(getYaw(), getLatestModulePositions());
 
-        // SmartDashboard.putNumber("pose x", getPose().getX());
-        // SmartDashboard.putNumber("pose y", getPose().getY());
-        // SmartDashboard.putNumber("pose rot", getPose().getRotation().getDegrees());
-
+        SmartDashboard.putNumber("pose x", getPose().getX());
+        SmartDashboard.putNumber("pose y", getPose().getY());
+        SmartDashboard.putNumber("pose rot", getPose().getRotation().getDegrees());
     }
 
     

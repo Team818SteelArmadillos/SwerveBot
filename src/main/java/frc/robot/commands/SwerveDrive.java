@@ -1,10 +1,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
-
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,12 +18,13 @@ public class SwerveDrive extends Command {
     
     private SwerveDrivetrain m_swerveDrivetrain;
     private XboxController m_driverController;
-    private int m_driveAxis;
-    private int m_strafeAxis;
-    private int m_rotationAxis;
 
     private SlewRateLimiter m_xAxisARateLimiter;
     private SlewRateLimiter m_yAxisARateLimiter;
+
+    private PIDController m_rotation_pid;
+
+    private double target_rotation;
 
     /**
      * 
@@ -40,20 +40,21 @@ public class SwerveDrive extends Command {
      * 
      */
 
-    public SwerveDrive(SwerveDrivetrain swerveDrivetrain, XboxController driverController, int driveAxis, int strafeAxis, int rotationAxis, boolean fieldRelative, boolean openLoop) {
+    public SwerveDrive(SwerveDrivetrain swerveDrivetrain, XboxController driverController, boolean fieldRelative, boolean openLoop) {
         m_swerveDrivetrain = swerveDrivetrain;
         addRequirements(m_swerveDrivetrain);
 
         m_driverController = driverController;
-        // m_driveAxis = XboxController.Axis.kLeftY.value;
-        // m_strafeAxis = strafeAxis;
-        // m_rotationAxis = rotationAxis;
         m_fieldRelative = fieldRelative;
         m_openLoop = openLoop;
 
         m_xAxisARateLimiter = new SlewRateLimiter(Constants.A_RATE_LIMITER);
         m_yAxisARateLimiter = new SlewRateLimiter(Constants.A_RATE_LIMITER);
 
+        m_rotation_pid = new PIDController(Constants.ROTATION_P, Constants.ROTATION_I, Constants.ROTATION_D);
+        m_rotation_pid.setTolerance(Constants.ROTATION_TOLERANCE);
+
+        target_rotation = m_swerveDrivetrain.getAngle();
     }
 
     @Override
@@ -78,13 +79,20 @@ public class SwerveDrive extends Command {
         double yAxisFiltered = m_yAxisARateLimiter.calculate(yAxisSquared);
         double xAxisFiltered = m_xAxisARateLimiter.calculate(xAxisSquared);
 
+        /* Calculate PID change for Rotation control */
+        target_rotation += rAxisSquared * (Constants.CONTROLLER_ROTAION_RATE * Constants.DEGREES_PER_RADIAN);
+
         /* Input variables into drive methods */
         m_translation = new Translation2d(yAxisFiltered, xAxisFiltered).times(Constants.MAX_SPEED);
-        m_rotation = rAxisSquared * Constants.MAX_ANGULAR_VELOCITY * 0.5;
+        m_rotation = m_rotation_pid.calculate(m_swerveDrivetrain.getAngle(), target_rotation) * (Constants.MAX_ANGULAR_VELOCITY * 0.5);
         m_swerveDrivetrain.drive(m_translation, m_rotation, m_fieldRelative, m_openLoop);
 
-        //m_driverController.setRumble(RumbleType.kBothRumble, 0.5);
-
+        /* Reset our gyro and target angle when we press X */
+        if (m_driverController.getXButton())
+        {
+            m_swerveDrivetrain.resetGyro();
+            target_rotation = 0.0;
+        }
     }
 }
 

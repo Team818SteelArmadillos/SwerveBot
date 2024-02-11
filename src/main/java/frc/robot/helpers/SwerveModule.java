@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.helpers;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -105,17 +105,6 @@ public class SwerveModule {
 
     /**
      * 
-     * Configures the CANCoder to the configuration set in CTREConfigs.java
-     * 
-     */
-
-    private void configAzimuthEncoder() {        
-        //m_canCoder.configFactoryDefault();
-        //m_canCoder.configAllSettings(Robot.ctreConfigs.swerveCanCoderConfig);
-    }
-
-    /**
-     * 
      * Configures the Azimuth motor to the configuration set in CTREConfigs.java
      * 
      */
@@ -185,6 +174,12 @@ public class SwerveModule {
         Rotation2d angle = getAzimuthEncoderDeg();
         return new SwerveModuleState(velocity, angle);
 
+    }
+
+    public SwerveModulePosition getPosition() {
+        double distance = (getDriveEncoder()/Constants.TICKS_PER_REVOLUTION) * Constants.DRIVE_GEAR_RATIO * (Constants.WHEEL_CIRCUMFERENCE);
+        Rotation2d angle = getAzimuthEncoderDeg();
+        return new SwerveModulePosition(distance, angle);
     }
 
     /**

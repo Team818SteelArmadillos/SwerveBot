@@ -81,13 +81,13 @@ public class SwerveDrive extends Command {
             }
             else
             {
+                target_rotation = m_swerveDrivetrain.getAngle();
                 pid_delayCounter++;
             }
             
         }
         else
         {
-            target_rotation = m_swerveDrivetrain.getAngle();
             pid_delayCounter = 0;
         } 
         

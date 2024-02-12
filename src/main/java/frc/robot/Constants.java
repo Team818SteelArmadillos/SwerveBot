@@ -76,9 +76,9 @@ public final class Constants {
 
     
     /* Robot Rotation PID Values */
-    public static final double ROTATION_P = 1.0; 
+    public static final double ROTATION_P = 0.1; 
     public static final double ROTATION_I = 0.0;
-    public static final double ROTATION_D = 0.0;
+    public static final double ROTATION_D = 0.01;
     public static final double ROTATION_TOLERANCE = 0.0;
 
     /* Drive Motor Characterization Values */
@@ -111,7 +111,7 @@ public final class Constants {
     public static final double MAX_ANGULAR_VELOCITY = Math.PI * 4.12; //radians per second (theoretical calculation)
     public static final double TURN_IN_PLACE_SPEED = 0.5;
     public static final double A_RATE_LIMITER = 2.0; //Slew Rate Limiter Constant
-    public static final double CONTROLLER_ROTAION_RATE = MAX_ANGULAR_VELOCITY/50.0; //updates per execute cycle AKA every 20ms
+    //public static final double CONTROLLER_ROTAION_RATE = 0.5; //updates per execute cycle AKA every 20ms
 
     /*============================
                Kinematics
@@ -134,7 +134,7 @@ public final class Constants {
     ==============================*/
 
     /* Controller Constants */
-    public static final double STICK_DEADBAND = 0.1;
+    public static final double STICK_DEADBAND = 0.2;
     public static final int DRIVER_PORT = 0;
     public static final int OPERATOR_PORT = 1;
     public static final int TEST_PORT = 5;

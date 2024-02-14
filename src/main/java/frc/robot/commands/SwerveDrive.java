@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.Vision;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,6 +17,8 @@ public class SwerveDrive extends Command {
     private Translation2d m_translation;
     private boolean m_fieldRelative;
     private boolean m_openLoop;
+
+    private Vision m_Vision;
     
     private SwerveDrivetrain m_swerveDrivetrain;
     private XboxController m_driverController;
@@ -43,13 +46,14 @@ public class SwerveDrive extends Command {
      * 
      */
 
-    public SwerveDrive(SwerveDrivetrain swerveDrivetrain, XboxController driverController, boolean fieldRelative, boolean openLoop) {
+    public SwerveDrive(SwerveDrivetrain swerveDrivetrain, XboxController driverController, boolean fieldRelative, boolean openLoop, Vision m_Vision) {
         m_swerveDrivetrain = swerveDrivetrain;
         addRequirements(m_swerveDrivetrain);
 
         m_driverController = driverController;
         m_fieldRelative = fieldRelative;
         m_openLoop = openLoop;
+        this.m_Vision = m_Vision;
 
         m_xAxisARateLimiter = new SlewRateLimiter(Constants.A_RATE_LIMITER);
         m_yAxisARateLimiter = new SlewRateLimiter(Constants.A_RATE_LIMITER);
@@ -115,6 +119,8 @@ public class SwerveDrive extends Command {
             m_swerveDrivetrain.resetGyro();
             target_rotation = 0.0;
         }
+        m_Vision.updatePoseLimelight();
+        m_swerveDrivetrain.resetOdometry(m_Vision.getFusedPose());
     }
 }
 

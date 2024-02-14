@@ -93,13 +93,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(), rotation, getYaw())
                               : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
 
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.MAX_SPEED);
-
-        for(SwerveModule module : m_swerveModules){
-            module.setDesiredState(swerveModuleStates[module.m_moduleNumber], isOpenLoop);
-        }
-
-
+        setModuleStates(swerveModuleStates);
     }
 
     /**
@@ -233,23 +227,11 @@ public class SwerveDrivetrain extends SubsystemBase {
         double absTotal = Math.abs(currentAngle) + Math.abs(desiredAngle);
 
         if(isDesiredPositive && isCurrentPositive) {
-            if(m_desiredAngle > m_currentAngle) {
-                return true;
-            } else {
-                return false;
-            }
+            return m_desiredAngle > m_currentAngle;
         } else if(!isDesiredPositive && !isCurrentPositive) {
-            if(m_desiredAngle > m_currentAngle) {
-                return true;
-            } else {
-                return false;
-            }
+            return m_desiredAngle > m_currentAngle;
         } else {
-            if(absTotal > 180) {
-                return false;
-            } else {
-                return true;
-            }
+            return absTotal > 180;
         }
         
 
@@ -272,14 +254,7 @@ public class SwerveDrivetrain extends SubsystemBase {
      */
 
     public void setGyro(double yaw) {
-        double yawMod;
-        if(yaw < 0) {
-            yawMod = 360 - yaw;
-        } else if(yaw > 0) {
-            yawMod = yaw;
-        } else {
-            yawMod = yaw;
-        }
+        double yawMod = yaw < 0 ? 360 - yaw : yaw;
         m_gyro.setYaw(yawMod);
     }
 
